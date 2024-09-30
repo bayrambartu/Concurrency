@@ -6,20 +6,20 @@ import (
 )
 
 func main() {
-	start := time.Now()
+	now := time.Now()
 	defer func() {
-		fmt.Println(time.Since(start))
+		fmt.Println(time.Since(now))
 	}()
-
-	evilNinjas := []string{"Tommy", "Johnny", "Bobby", "Andy"}
-	for _, evilNinja := range evilNinjas {
-		go attack(evilNinja)
-	}
-	time.Sleep(time.Second * 2)
-
+	smokeSignal := make(chan bool)
+	evilNinja := "Tommy"
+	go attack(evilNinja, smokeSignal)
+	smokeSignal <- false
+	fmt.Println(<-smokeSignal)
 }
 
-func attack(target string) {
-	fmt.Println("Throwing ninja starts at", target)
+func attack(target string, attacked chan bool) {
 	time.Sleep(time.Second)
+
+	fmt.Println("Throwing ninja starts at", target)
+	attacked <- true
 }
